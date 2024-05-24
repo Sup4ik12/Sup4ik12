@@ -1,4 +1,7 @@
 #include "TXLib.h"
+#include <fstream>
+
+using namespace std;
 
 struct shape
 {
@@ -6,10 +9,19 @@ struct shape
     string v1;
     string v2;
     string v3;
-    HDC pict1;
-    HDC pict2;
-    HDC pict3;
+    HDC p1;
+    HDC p2;
+    HDC p3;
+    int right;
 };
+
+string getPart(int *p, string s)
+{
+    int pos1 = *p +1;
+    *p = s.find(",",pos1);
+    string part = s.substr(pos1,*p - pos1);
+    return part;
+}
 
 bool clk(int x)
     {
@@ -23,24 +35,29 @@ int main()
     txCreateWindow(1300,730);
 
     int nQue = 1;
+    int point = 0;
     char stroka[50];
 
-    shape sh;
+    string str;
+    ifstream file("вопросы.txt");
 
+    shape sh;
     shape sh_list[10];
 
-    sh_list[0] = {"Когда Владамир Святославович крестил Русь?","1050","988","999",txLoadImage("ФОТО/1050.bmp"),txLoadImage("ФОТО/988.bmp"),txLoadImage("ФОТО/999.bmp")};
-    sh_list[1] = {"Кто правил в России в 1115 году","Иван Грозный","Владимир Мономах","Владимир Красное солнышко",txLoadImage("ФОТО/грозный.bmp"),txLoadImage("ФОТО/мономах.bmp"),txLoadImage("ФОТО/владимир.bmp")};
-    sh_list[2] = {};
-    sh_list[3] = {};
-    sh_list[4] = {};
-    sh_list[5] = {};
-    sh_list[6] = {};
-    sh_list[7] = {};
-    sh_list[8] = {};
-    sh_list[9] = {};
-
-    while (nQue<11)
+    while(file.good())
+    {
+        getline(file,str);
+        int pos2 = -1;
+        sh_list[nQue-1].question = getPart(&pos2,str);
+        sh_list[nQue-1].v1 = getPart(&pos2,str);
+        sh_list[nQue-1].v2 = getPart(&pos2,str);
+        sh_list[nQue-1].v3 = getPart(&pos2,str);
+        sh_list[nQue-1].p1 = txLoadImage(getPart(&pos2,str).c_str());
+        sh_list[nQue-1].p2 = txLoadImage(getPart(&pos2,str).c_str());
+        sh_list[nQue-1].p3 = txLoadImage(getPart(&pos2,str).c_str());
+        sh_list[nQue-1].right = atoi(getPart(&pos2,str).c_str());
+    }
+    while (nQue<3)
     {
         txSetFillColor(TX_BLACK);
         txClear();
@@ -57,13 +74,13 @@ int main()
         txDrawText(1100,30,1300,78,stroka);
         //первый вариант ответа
         txRectangle(103,273,410,562);
-        txBitBlt(txDC(),103,273,307,289,sh.pict1);
+        txBitBlt(txDC(),103,273,307,289,sh.p1);
         //второй вариант ответа
         txRectangle(504,273,810,562);
-        txBitBlt(txDC(),504,273,307,289,sh.pict2);
+        txBitBlt(txDC(),504,273,307,289,sh.p2);
         //третий вариант ответа
         txRectangle(893,273,1199,562);
-        txBitBlt(txDC(),893,273,307,289,sh.pict3);
+        txBitBlt(txDC(),893,273,307,289,sh.p3);
 
         //вопрос
         txRectangle(269,67,1011,167);
@@ -80,6 +97,10 @@ int main()
 
         if (clk(103))
         {
+            if(sh.right == 1)
+            {
+                point ++;
+            }
             while(txMouseButtons() == 1)
             {
                 txSleep(10);
@@ -88,6 +109,10 @@ int main()
         }
         if (clk(504))
         {
+            if(sh.right == 2)
+            {
+                point ++;
+            }
             while(txMouseButtons() == 1)
             {
                 txSleep(10);
@@ -96,6 +121,10 @@ int main()
         }
         if (clk(893))
         {
+            if(sh.right == 3)
+            {
+                point ++;
+            }
             while(txMouseButtons() == 1)
             {
                 txSleep(10);
@@ -106,11 +135,16 @@ int main()
 
         txEnd();
     }
+    file.close();
 
+    txSetFillColor(TX_BLACK);
+    txClear();
+    sprintf(stroka, "Ваш результат %d",point);
+    txDrawText(0,0,1300,730,stroka);
 
-    txDeleteDC(sh.pict1);
-    txDeleteDC(sh.pict2);
-    txDeleteDC(sh.pict3);
+    txDeleteDC(sh.p1);
+    txDeleteDC(sh.p2);
+    txDeleteDC(sh.p3);
 
 
     txTextCursor(false);
