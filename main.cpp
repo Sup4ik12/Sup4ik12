@@ -24,11 +24,11 @@ string getPart(int *p, string s)
 }
 
 bool clk(int x)
-    {
-        return (txMouseButtons() == 1 and
-            txMouseX()>x and txMouseX()<x+307 and
-            txMouseY()>273 and txMouseY()<562);
-    }
+{
+    return (txMouseButtons() == 1 and
+        txMouseX()>x and txMouseX()<x+307 and
+        txMouseY()>273 and txMouseY()<562);
+}
 
 int main()
 {
@@ -37,6 +37,7 @@ int main()
     int nQue = 1;
     int point = 0;
     char stroka[50];
+    int i = 0;
 
     string str;
     ifstream file("вопросы.txt");
@@ -48,16 +49,17 @@ int main()
     {
         getline(file,str);
         int pos2 = -1;
-        sh_list[nQue-1].question = getPart(&pos2,str);
-        sh_list[nQue-1].v1 = getPart(&pos2,str);
-        sh_list[nQue-1].v2 = getPart(&pos2,str);
-        sh_list[nQue-1].v3 = getPart(&pos2,str);
-        sh_list[nQue-1].p1 = txLoadImage(getPart(&pos2,str).c_str());
-        sh_list[nQue-1].p2 = txLoadImage(getPart(&pos2,str).c_str());
-        sh_list[nQue-1].p3 = txLoadImage(getPart(&pos2,str).c_str());
-        sh_list[nQue-1].right = atoi(getPart(&pos2,str).c_str());
+        sh_list[i].question = getPart(&pos2,str);
+        sh_list[i].v1 = getPart(&pos2,str);
+        sh_list[i].v2 = getPart(&pos2,str);
+        sh_list[i].v3 = getPart(&pos2,str);
+        sh_list[i].p1 = txLoadImage(getPart(&pos2,str).c_str());
+        sh_list[i].p2 = txLoadImage(getPart(&pos2,str).c_str());
+        sh_list[i].p3 = txLoadImage(getPart(&pos2,str).c_str());
+        sh_list[i].right = atoi(getPart(&pos2,str).c_str());
+        i++;
     }
-    while (nQue<3)
+    while (nQue<11)
     {
         txSetFillColor(TX_BLACK);
         txClear();
@@ -66,7 +68,7 @@ int main()
         sh = sh_list[nQue-1];
 
         //шаблон
-        txSelectFont("Comic Sans",40);
+        txSelectFont("Comic Sans",32);
         txSetColor(TX_WHITE);
         txSetFillColor(TX_TRANSPARENT);
         //номер вопроса
@@ -136,11 +138,40 @@ int main()
         txEnd();
     }
     file.close();
+    if(point <= 3)
+    {
+        txSetFillColor(TX_BLACK);
+        txClear();
+        sprintf(stroka, "Ваш результат %d",point);
+        txDrawText(0,0,1300,730,stroka);
+        txDrawText(0,50,1300,730,"Вы не знаете историю \n""лучше подучить или не изучать");
+    }
+    if(point <= 7 and point >3)
+    {
+        txSetFillColor(TX_BLACK);
+        txClear();
+        sprintf(stroka, "Ваш результат %d",point);
+        txDrawText(0,0,1300,730,stroka);
+        txDrawText(0,50,1300,730,"Вы хорошо знаете историю\n""но не идеально" );
+    }
+    if(point == 8 or point ==9)
+    {
+        txSetFillColor(TX_BLACK);
+        txClear();
+        sprintf(stroka, "Ваш результат %d",point);
+        txDrawText(0,0,1300,730,stroka);
+        txDrawText(0,50,1300,730,"Вы прекрасно знаете историю \n""в будущем вы будете великим историком" );
+    }
+    if(point == 10)
+    {
+        txSetFillColor(TX_BLACK);
+        txClear();
+        sprintf(stroka, "Ваш результат %d",point);
+        txDrawText(0,0,1300,730,stroka);
+        txDrawText(0,100,1300,730,"Вы списывали(");
+    }
 
-    txSetFillColor(TX_BLACK);
-    txClear();
-    sprintf(stroka, "Ваш результат %d",point);
-    txDrawText(0,0,1300,730,stroka);
+
 
     txDeleteDC(sh.p1);
     txDeleteDC(sh.p2);
@@ -150,3 +181,4 @@ int main()
     txTextCursor(false);
     return 0;
 }
+txDrawText(0,50,1300,730,qwetxDrawText(0,50,1300,730,qw
